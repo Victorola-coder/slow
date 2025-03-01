@@ -1,5 +1,5 @@
 // Base API URL for development
-export const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000/api";
+export const API_URL = "/api";
 
 // API endpoints
 export const API_ENDPOINTS = {
