@@ -31,12 +31,11 @@ export const metadata: Metadata = {
   icons: {
     icon: "/icon.png",
   },
-  title: "SpeedPulse - Simple Internet Speed Test",
-  description:
-    "Test your internet speed instantly with SpeedPulse. Get accurate measurements of your download speed, upload speed, and latency.",
+  title: "SpeedPulse - Internet Speed Test",
+  description: "Test your internet speed, check your IP, and compare regional network performance with SpeedPulse.",
   applicationName: "SpeedPulse",
   authors: [{ name: "SpeedPulse", url: "https://speedpulse.dev" }],
-  keywords: ["Speed Test", "Internet Speed", "Network Test", "Bandwidth Test"],
+  keywords: ["Speed Test", "Internet Speed", "Network Test", "IP Check", "Network Statistics"],
   creator: "SpeedPulse",
   publisher: "SpeedPulse",
   generator: "Next.js",
@@ -46,17 +45,15 @@ export const metadata: Metadata = {
     follow: true,
   },
   openGraph: {
-    type: "website",
-    url: "https://domainname.host",
-    title: "Nextjs template",
-    siteName: "nextapp template",
-    locale: "en_US",
+    title: "SpeedPulse - Internet Speed Test",
+    description: "Fast and accurate internet speed testing",
+    url: "https://speedpulse.dev",
+    siteName: "SpeedPulse",
     images: [
       {
-        url: "linktoopengraphimage.cdn",
+        url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "next OG Image",
       },
     ],
   },
