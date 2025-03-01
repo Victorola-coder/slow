@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { RefreshCw } from "lucide-react";
 import { useState, useEffect } from "react";
 import { API_ENDPOINTS } from "../constants";
 import { getNetworkInfo } from "../lib/networkInfo";
@@ -23,29 +24,52 @@ interface NetworkInfoData {
 export default function NetworkInfo() {
   const [networkInfo, setNetworkInfo] = useState<NetworkInfoData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+
+  const fetchNetworkInfo = async () => {
+    setRefreshing(true);
+    try {
+      const info = await getNetworkInfo();
+      setNetworkInfo(info);
+    } catch (error) {
+      console.error("Failed to fetch network info:", error);
+      try {
+        const response = await fetch(API_ENDPOINTS.networkInfo);
+        const data = await response.json();
+        setNetworkInfo(data);
+      } catch (apiError) {
+        console.error("API fallback failed:", apiError);
+      }
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
+  };
 
   useEffect(() => {
-    async function fetchNetworkInfo() {
-      try {
-        // Use our native implementation instead of API
-        const info = await getNetworkInfo();
-        setNetworkInfo(info);
-      } catch (error) {
-        console.error("Failed to fetch network info:", error);
-        // Fallback to API endpoint if native method fails
-        try {
-          const response = await fetch(API_ENDPOINTS.networkInfo);
-          const data = await response.json();
-          setNetworkInfo(data);
-        } catch (apiError) {
-          console.error("API fallback failed:", apiError);
-        }
-      } finally {
-        setLoading(false);
-      }
+    fetchNetworkInfo();
+
+    // Listen for online/offline events
+    window.addEventListener("online", fetchNetworkInfo);
+    window.addEventListener("offline", fetchNetworkInfo);
+
+    // Listen for VPN/connection changes
+    const connection = (navigator as any).connection;
+    if (connection) {
+      connection.addEventListener("change", fetchNetworkInfo);
     }
 
-    fetchNetworkInfo();
+    // Refresh every 30 seconds to catch VPN changes
+    const intervalId = setInterval(fetchNetworkInfo, 30000);
+
+    return () => {
+      window.removeEventListener("online", fetchNetworkInfo);
+      window.removeEventListener("offline", fetchNetworkInfo);
+      if (connection) {
+        connection.removeEventListener("change", fetchNetworkInfo);
+      }
+      clearInterval(intervalId);
+    };
   }, []);
 
   if (loading) {
@@ -71,9 +95,22 @@ export default function NetworkInfo() {
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 rounded-xl bg-black/20 backdrop-blur-sm border border-white/10">
       {/* Left Column - Network Info */}
       <div>
-        <h2 className="text-2xl font-semibold bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent mb-4">
-          Your Network
-        </h2>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-2xl font-semibold bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
+            Your Network
+          </h2>
+          <button
+            onClick={fetchNetworkInfo}
+            disabled={refreshing}
+            className="p-2 rounded-lg bg-black/30 hover:bg-black/40 transition-colors"
+          >
+            <RefreshCw
+              className={`w-5 h-5 text-gray-400 ${
+                refreshing ? "animate-spin" : "hover:text-white"
+              }`}
+            />
+          </button>
+        </div>
         <div className="space-y-4">
           <div className="p-4 rounded-lg bg-black/30">
             <p className="text-gray-400 text-sm">IP Address</p>
