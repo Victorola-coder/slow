@@ -28,6 +28,7 @@ export default function NetworkInfo() {
     async function fetchNetworkInfo() {
       try {
         const response = await fetch(API_ENDPOINTS.networkInfo);
+        if (!response.ok) throw new Error("Network response was not ok");
         const data = await response.json();
         setNetworkInfo(data);
       } catch (error) {
@@ -41,8 +42,20 @@ export default function NetworkInfo() {
   }, []);
 
   if (loading) {
-    return <div className="animate-pulse h-32 bg-gray-700/50 rounded-lg"></div>;
+    return (
+      <div className="space-y-4">
+        <div className="h-8 bg-white/5 rounded animate-pulse" />
+        <div className="h-24 bg-white/5 rounded animate-pulse" />
+      </div>
+    );
   }
+
+  // Show placeholder if data is not available
+  const locationText = networkInfo?.location
+    ? `${networkInfo.location.city || "Unknown"}, ${
+        networkInfo.location.region || "Unknown"
+      }`
+    : "Location unavailable";
 
   return (
     <motion.div
@@ -67,17 +80,19 @@ export default function NetworkInfo() {
               <div className="space-y-2">
                 <div className="bg-white/5 p-4 rounded-xl border border-white/10">
                   <p className="text-gray-400 text-sm">IP Address</p>
-                  <p className="text-lg font-medium">{networkInfo?.ip}</p>
-                </div>
-                <div className="bg-white/5 p-4 rounded-xl border border-white/10">
-                  <p className="text-gray-400 text-sm">Location</p>
                   <p className="text-lg font-medium">
-                    {networkInfo?.location.city}, {networkInfo?.location.region}
+                    {networkInfo?.ip || "Unknown"}
                   </p>
                 </div>
                 <div className="bg-white/5 p-4 rounded-xl border border-white/10">
+                  <p className="text-gray-400 text-sm">Location</p>
+                  <p className="text-lg font-medium">{locationText}</p>
+                </div>
+                <div className="bg-white/5 p-4 rounded-xl border border-white/10">
                   <p className="text-gray-400 text-sm">ISP</p>
-                  <p className="text-lg font-medium">{networkInfo?.isp}</p>
+                  <p className="text-lg font-medium">
+                    {networkInfo?.isp || "Unknown"}
+                  </p>
                 </div>
               </div>
             </div>
@@ -92,14 +107,16 @@ export default function NetworkInfo() {
                   <div className="flex justify-between items-center">
                     <p className="text-gray-400">Download</p>
                     <p className="text-lg font-medium">
-                      {networkInfo?.regionalSpeeds.averageDownload} Mbps
+                      {networkInfo?.regionalSpeeds.averageDownload || 0} Mbps
                     </p>
                   </div>
                   <div className="mt-2 h-2 bg-white/10 rounded-full overflow-hidden">
                     <div
                       className="h-full bg-gradient-to-r from-purple-500 to-blue-500"
                       style={{
-                        width: `${(networkInfo?.regionalSpeeds.averageDownload || 0) / 2}%`,
+                        width: `${
+                          (networkInfo?.regionalSpeeds.averageDownload || 0) / 2
+                        }%`,
                       }}
                     />
                   </div>
@@ -109,14 +126,16 @@ export default function NetworkInfo() {
                   <div className="flex justify-between items-center">
                     <p className="text-gray-400">Upload</p>
                     <p className="text-lg font-medium">
-                      {networkInfo?.regionalSpeeds.averageUpload} Mbps
+                      {networkInfo?.regionalSpeeds.averageUpload || 0} Mbps
                     </p>
                   </div>
                   <div className="mt-2 h-2 bg-white/10 rounded-full overflow-hidden">
                     <div
                       className="h-full bg-gradient-to-r from-purple-500 to-blue-500"
                       style={{
-                        width: `${(networkInfo?.regionalSpeeds.averageUpload || 0) / 2}%`,
+                        width: `${
+                          (networkInfo?.regionalSpeeds.averageUpload || 0) / 2
+                        }%`,
                       }}
                     />
                   </div>
