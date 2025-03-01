@@ -22,3 +22,5 @@ export const TEST_DURATIONS = {
   download: 10000,
   upload: 10000,
 };
+
+export const API_KEY = "1234567890";
