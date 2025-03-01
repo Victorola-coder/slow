@@ -1,27 +1,39 @@
 import { NextResponse } from "next/server";
 
 export async function GET(request: Request) {
-  // Get client IP from request headers
-  const forwarded = request.headers.get("x-forwarded-for");
-  const ip = forwarded ? forwarded.split(",")[0] : "Unknown";
+  try {
+    // Get client IP
+    const forwarded = request.headers.get("x-forwarded-for");
+    const ip = forwarded
+      ? forwarded.split(",")[0]
+      : request.headers.get("x-real-ip");
 
-  // In a real implementation, you would:
-  // 1. Use a geolocation service to get location data
-  // 2. Query an ISP database for provider information
-  // 3. Get regional speed statistics from your database
+    // Call IP geolocation API (you'll need to sign up for a service like ipapi.co)
+    const geoResponse = await fetch(`https://ipapi.co/${ip}/json/`);
+    const geoData = await geoResponse.json();
 
-  return NextResponse.json({
-    ip,
-    location: {
-      country: "Local Development",
-      region: "Development Region",
-      city: "Development City",
-    },
-    isp: "Local Development ISP",
-    regionalSpeeds: {
+    // You would typically get this from your database
+    const regionalSpeeds = {
       averageDownload: 100,
       averageUpload: 50,
       averagePing: 20,
-    },
-  });
+    };
+
+    return NextResponse.json({
+      ip,
+      location: {
+        country: geoData.country_name,
+        region: geoData.region,
+        city: geoData.city,
+      },
+      isp: geoData.org,
+      regionalSpeeds,
+    });
+  } catch (error) {
+    console.error("Error fetching network info:", error);
+    return NextResponse.json(
+      { error: "Failed to fetch network information" },
+      { status: 500 }
+    );
+  }
 }

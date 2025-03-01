@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { Button } from "./ui";
+import { useState } from "react";
 import { motion } from "framer-motion";
+import NetworkInfo from "./NetworkInfo";
 import { API_ENDPOINTS, TEST_FILE_SIZES } from "@/app/constants";
 
 export default function SpeedTest() {
@@ -109,6 +110,12 @@ export default function SpeedTest() {
             <Button onClick={testSpeed} variant="secondary" className="mt-8">
               Test Again
             </Button>
+          </div>
+        )}
+
+        {downloadSpeed !== null && (
+          <div className="mt-8">
+            <NetworkInfo />
           </div>
         )}
       </motion.div>
