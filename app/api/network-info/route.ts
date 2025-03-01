@@ -2,31 +2,24 @@ import { NextResponse } from "next/server";
 
 export async function GET(request: Request) {
   try {
+    // Get client IP from request headers
     const forwardedFor = request.headers.get("x-forwarded-for");
     const realIP = request.headers.get("x-real-ip");
     const ip = forwardedFor?.split(",")[0] || realIP || "127.0.0.1";
 
-    const geoResponse = await fetch(`https://ipapi.co/${ip}/json/`);
-
-    if (!geoResponse.ok) {
-      throw new Error(`Failed to fetch IP data: ${geoResponse.statusText}`);
-    }
-
-    const geoData = await geoResponse.json();
-
-    // Check for API error response
-    if (geoData.error) {
-      throw new Error(geoData.reason || "API Error");
-    }
+    // Get timezone-based location
+    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    const [continent, ...locationParts] = timezone.split("/");
+    const location = locationParts.join(", ").replace(/_/g, " ");
 
     return NextResponse.json({
       ip,
       location: {
-        country: geoData.country_name || "Unknown",
-        region: geoData.region || "Unknown",
-        city: geoData.city || "Unknown",
+        country: continent || "Unknown",
+        region: location || "Unknown",
+        city: "Unknown",
       },
-      isp: geoData.org || "Unknown ISP",
+      isp: "Local Network",
       regionalSpeeds: {
         averageDownload: 100,
         averageUpload: 50,
