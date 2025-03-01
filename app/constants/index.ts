@@ -1,0 +1,24 @@
+// Base API URL for development
+export const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000/api";
+
+// API endpoints
+export const API_ENDPOINTS = {
+  ping: `${API_URL}/ping`,
+  downloadTest: `${API_URL}/download-test`,
+  uploadTest: `${API_URL}/upload-test`,
+  networkInfo: `${API_URL}/network-info`,
+};
+
+// Test file sizes (in bytes)
+export const TEST_FILE_SIZES = {
+  small: 1024 * 1024, // 1MB
+  medium: 5 * 1024 * 1024, // 5MB
+  large: 10 * 1024 * 1024, // 10MB
+};
+
+// Test durations (in milliseconds)
+export const TEST_DURATIONS = {
+  ping: 5000,
+  download: 10000,
+  upload: 10000,
+};
