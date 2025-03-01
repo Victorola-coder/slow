@@ -5,6 +5,8 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import NetworkInfo from "./NetworkInfo";
 import { API_ENDPOINTS, TEST_FILE_SIZES } from "@/app/constants";
+import { formatSpeed, formatPing } from '@/app/lib/speedTest';
+import { toast } from 'sonner';
 
 export default function SpeedTest() {
   const [testing, setTesting] = useState(false);
@@ -61,62 +63,83 @@ export default function SpeedTest() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-4">
+    <div className="relative">
+      {/* Background gradient effect */}
+      <div className="absolute inset-0 bg-gradient-to-b from-purple-500/10 via-transparent to-blue-500/10 blur-3xl -z-10" />
+      
       <motion.div
-        initial={{ scale: 0.9, opacity: 0 }}
+        initial={{ scale: 0.95, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
-        className="text-center"
+        className="backdrop-blur-sm bg-black/20 rounded-3xl p-8 border border-white/10"
       >
-        <h1 className="text-4xl md:text-6xl font-bold mb-8">SpeedPulse</h1>
-
         {!testing && !downloadSpeed && (
-          <Button onClick={testSpeed} size="lg" className="mb-8">
-            Start Speed Test
-          </Button>
-        )}
-
-        {testing && (
-          <div className="mb-8">
-            <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto"></div>
-            <p className="mt-4 text-xl">Testing your connection...</p>
-          </div>
-        )}
-
-        {downloadSpeed !== null && (
-          <div className="space-y-6">
-            <div className="text-center">
-              <h2 className="text-2xl mb-2">Download Speed</h2>
-              <p className="text-5xl font-bold text-primary">
-                {downloadSpeed} Mbps
-              </p>
-            </div>
-
-            {uploadSpeed !== null && (
-              <div className="text-center">
-                <h2 className="text-2xl mb-2">Upload Speed</h2>
-                <p className="text-5xl font-bold text-primary">
-                  {uploadSpeed} Mbps
-                </p>
-              </div>
-            )}
-
-            {ping !== null && (
-              <div className="text-center">
-                <h2 className="text-2xl mb-2">Ping</h2>
-                <p className="text-5xl font-bold text-primary">{ping} ms</p>
-              </div>
-            )}
-
-            <Button onClick={testSpeed} variant="secondary" className="mt-8">
-              Test Again
+          <div className="text-center space-y-6">
+            <h2 className="text-2xl font-semibold bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
+              Test Your Internet Speed
+            </h2>
+            <Button
+              onClick={testSpeed}
+              className="bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white px-8 py-4 rounded-full transform transition hover:scale-105"
+            >
+              Start Test
             </Button>
           </div>
         )}
 
-        {downloadSpeed !== null && (
-          <div className="mt-8">
-            <NetworkInfo />
+        {testing && (
+          <div className="text-center space-y-4">
+            <div className="relative w-32 h-32 mx-auto">
+              <div className="absolute inset-0 bg-gradient-to-r from-purple-500 to-blue-500 rounded-full animate-pulse" />
+              <div className="absolute inset-2 bg-black rounded-full" />
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="text-xl font-semibold">Testing...</div>
+              </div>
+            </div>
+            <p className="text-gray-400">Measuring your connection speed</p>
           </div>
+        )}
+
+        {downloadSpeed !== null && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="space-y-8"
+          >
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {/* Download Speed */}
+              <div className="bg-white/5 rounded-2xl p-6 backdrop-blur-sm border border-white/10">
+                <h3 className="text-gray-400 mb-2">Download</h3>
+                <div className="text-4xl font-bold bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
+                  {formatSpeed(downloadSpeed)}
+                </div>
+              </div>
+
+              {/* Upload Speed */}
+              <div className="bg-white/5 rounded-2xl p-6 backdrop-blur-sm border border-white/10">
+                <h3 className="text-gray-400 mb-2">Upload</h3>
+                <div className="text-4xl font-bold bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
+                  {uploadSpeed ? formatSpeed(uploadSpeed) : '---'}
+                </div>
+              </div>
+
+              {/* Ping */}
+              <div className="bg-white/5 rounded-2xl p-6 backdrop-blur-sm border border-white/10">
+                <h3 className="text-gray-400 mb-2">Ping</h3>
+                <div className="text-4xl font-bold bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
+                  {ping ? formatPing(ping) : '---'}
+                </div>
+              </div>
+            </div>
+
+            <div className="text-center">
+              <Button
+                onClick={testSpeed}
+                className="bg-white/5 hover:bg-white/10 text-white px-6 py-3 rounded-full transform transition hover:scale-105 border border-white/10"
+              >
+                Test Again
+              </Button>
+            </div>
+          </motion.div>
         )}
       </motion.div>
     </div>
