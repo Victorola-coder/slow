@@ -2,6 +2,7 @@ import React from "react";
 import SpeedTest from "./components/SpeedTest";
 import NetworkInfo from "./components/NetworkInfo";
 import Toast from "./components/ui/toast";
+import DynamicISPStats from "./components/DynamicISPStats";
 
 export default function Home() {
   return (
@@ -17,7 +18,12 @@ export default function Home() {
           </p>
         </div>
         <SpeedTest />
-        <NetworkInfo />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <NetworkInfo />
+          <div id="ispStatsContainer">
+            <DynamicISPStats />
+          </div>
+        </div>
       </div>
     </main>
   );
