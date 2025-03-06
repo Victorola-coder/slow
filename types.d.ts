@@ -149,4 +149,7 @@ interface AverageSpeedData {
   uploadAvg: number;
   pingAvg: number;
   samples: number;
+  averageDownload?: number | null;
+  averageUpload?: number | null;
+  averagePing?: number | null;
 }

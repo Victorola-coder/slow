@@ -9,3 +9,5 @@ export { default as Button } from "./button";
 export { default as Select } from "./select";
 export { default as Skeleton } from "./skeleton";
 export { default as TextArea } from "./textArea";
+export { TestProgress } from "./TestProgress";
+export { TestResult } from "./TestResult";
