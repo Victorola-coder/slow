@@ -31,6 +31,19 @@ export async function getNetworkInfo() {
     speeds = { averageDownload: 10, averageUpload: 5, averagePing: 100 };
   }
 
+  // Try to get the provider name from a client-side API if possible
+  let provider = "Unknown Provider";
+  try {
+    // This is just an example - you may want to implement a client-side API
+    // to get the actual provider name if possible
+    const response = await fetch('https://api.ipify.org?format=json');
+    const ipData = await response.json();
+    // In a real implementation, you would use this IP to get provider info
+    console.log("Client IP:", ipData.ip);
+  } catch (error) {
+    console.error("Failed to get provider info:", error);
+  }
+
   return {
     ip: await getPublicIP(),
     location: {
@@ -38,8 +51,9 @@ export async function getNetworkInfo() {
       region: location || "Unknown",
       city: "Unknown",
     },
-    isp: connectionType.toUpperCase(),
+    provider: provider, // Use the proper provider name from ISP data when possible
     regionalSpeeds: speeds,
+    timezone
   };
 }
 

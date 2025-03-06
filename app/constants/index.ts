@@ -24,3 +24,6 @@ export const TEST_DURATIONS = {
 };
 
 export const API_KEY = "1234567890";
+
+// Update the ping period to a minimum of 3 seconds (3000ms)
+export const PING_INTERVAL = 3000; // previously might have been a lower value
