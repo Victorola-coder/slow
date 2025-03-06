@@ -1,32 +1,12 @@
 "use client";
 
+import { toast } from "sonner";
 import { Button } from "./ui";
-import { useState, useEffect } from "react";
+import { Copy } from "lucide-react";
 import { motion } from "framer-motion";
-import NetworkInfo from "./NetworkInfo";
+import { useState, useEffect } from "react";
+import { formatSpeed, formatPing } from "@/app/lib/speedTest";
 import { API_ENDPOINTS, TEST_FILE_SIZES, PING_INTERVAL } from "@/app/constants";
-import { formatSpeed, formatPing } from '@/app/lib/speedTest';
-import { toast } from 'sonner';
-import { Copy } from 'lucide-react';
-
-interface NetworkInfo {
-  ip: string;
-  provider: string;
-  location: {
-    city: string;
-    region: string;
-    country: string;
-    loc: string;
-  };
-}
-
-interface AverageSpeedData {
-  provider: string;
-  downloadAvg: number;
-  uploadAvg: number;
-  pingAvg: number;
-  samples: number;
-}
 
 export default function SpeedTest() {
   const [testing, setTesting] = useState(false);
@@ -34,64 +14,78 @@ export default function SpeedTest() {
   const [uploadSpeed, setUploadSpeed] = useState<number | null>(null);
   const [ping, setPing] = useState<number | null>(null);
   const [networkInfo, setNetworkInfo] = useState<NetworkInfo | null>(null);
-  const [averageSpeedData, setAverageSpeedData] = useState<AverageSpeedData | null>(null);
+  const [averageSpeedData, setAverageSpeedData] =
+    useState<AverageSpeedData | null>(null);
   const [testProgress, setTestProgress] = useState(0);
-  const [testPhase, setTestPhase] = useState<'idle' | 'ping' | 'download' | 'upload'>('idle');
+  const [testPhase, setTestPhase] = useState<
+    "idle" | "ping" | "download" | "upload"
+  >("idle");
 
   // Fetch network info on component mount
   useEffect(() => {
     const getNetworkInfo = async () => {
       try {
-        const response = await fetch('/api/network-info');
+        const response = await fetch("/api/network-info");
         if (response.ok) {
           const data = await response.json();
           console.log("Network info response:", data); // For debugging
           setNetworkInfo(data);
 
           // Once we have network info, fetch average speeds for this location
-          const locationKey = `${data.location.city || 'unknown'}-${data.location.region || 'unknown'}-${data.location.country || 'unknown'}`;
+          const locationKey = `${data.location.city || "unknown"}-${
+            data.location.region || "unknown"
+          }-${data.location.country || "unknown"}`;
           fetchAverageSpeedData(locationKey, data.provider);
         }
       } catch (error) {
-        console.error('Error fetching network info:', error);
+        console.error("Error fetching network info:", error);
       }
     };
 
     getNetworkInfo();
   }, []);
 
-  const fetchAverageSpeedData = async (locationKey: string, provider: string) => {
+  const fetchAverageSpeedData = async (
+    locationKey: string,
+    provider: string
+  ) => {
     try {
-      const response = await fetch(`/api/average-speeds?locationKey=${locationKey}&provider=${provider}`);
+      const response = await fetch(
+        `/api/average-speeds?locationKey=${locationKey}&provider=${provider}`
+      );
       if (response.ok) {
         const data = await response.json();
         setAverageSpeedData(data);
       }
     } catch (error) {
-      console.error('Error fetching average speed data:', error);
+      console.error("Error fetching average speed data:", error);
     }
   };
 
-  const updateAverageSpeedData = async (downloadSpeed: number, uploadSpeed: number, pingTime: number) => {
+  const updateAverageSpeedData = async (
+    downloadSpeed: number,
+    uploadSpeed: number,
+    pingTime: number
+  ) => {
     if (!networkInfo) return;
 
     try {
       const locationKey = `${networkInfo.location.city}-${networkInfo.location.region}-${networkInfo.location.country}`;
-      await fetch('/api/average-speeds', {
-        method: 'POST',
+      await fetch("/api/average-speeds", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           locationKey,
           provider: networkInfo.provider,
           downloadSpeed,
           uploadSpeed,
-          pingTime
+          pingTime,
         }),
       });
     } catch (error) {
-      console.error('Error updating average speed data:', error);
+      console.error("Error updating average speed data:", error);
     }
   };
 
@@ -100,22 +94,22 @@ export default function SpeedTest() {
     setDownloadSpeed(null);
     setUploadSpeed(null);
     setPing(null);
-    setTestPhase('ping');
+    setTestPhase("ping");
     setTestProgress(0);
 
     // Start progress animation
     const progressInterval = setInterval(() => {
-      setTestProgress(prev => {
+      setTestProgress((prev) => {
         const newProgress = prev + 1;
         return newProgress <= 100 ? newProgress : 100;
       });
     }, 300); // Increment progress every 300ms
 
     // Test ping first
-    setTestPhase('ping');
+    setTestPhase("ping");
     const startTime = Date.now();
     try {
-      const response = await fetch('/api/ping');
+      const response = await fetch("/api/ping");
       const endTime = Date.now();
       const latency = endTime - startTime;
       setPing(latency);
@@ -126,7 +120,7 @@ export default function SpeedTest() {
     // Ensure we wait at least PING_INTERVAL between tests for more accurate results
     setTimeout(async () => {
       // Download speed test
-      setTestPhase('download');
+      setTestPhase("download");
       try {
         const start = Date.now();
         const response = await fetch(API_ENDPOINTS.downloadTest);
@@ -140,7 +134,7 @@ export default function SpeedTest() {
       }
 
       // Upload speed test
-      setTestPhase('upload');
+      setTestPhase("upload");
       try {
         const testData = new Blob([new ArrayBuffer(TEST_FILE_SIZES.small)]); // 1MB test file
         const start = Date.now();
@@ -170,20 +164,24 @@ export default function SpeedTest() {
   // Function to get appropriate label for test phase
   const getTestPhaseLabel = () => {
     switch (testPhase) {
-      case 'ping': return 'Testing ping...';
-      case 'download': return 'Testing download...';
-      case 'upload': return 'Testing upload...';
-      default: return 'Preparing test...';
+      case "ping":
+        return "Testing ping...";
+      case "download":
+        return "Testing download...";
+      case "upload":
+        return "Testing upload...";
+      default:
+        return "Preparing test...";
     }
   };
 
   const copyToClipboard = async (text: string) => {
     try {
       await navigator.clipboard.writeText(text);
-      toast.success('IP address copied to clipboard');
+      toast.success("IP address copied to clipboard");
     } catch (err) {
-      toast.error('Failed to copy IP address');
-      console.error('Failed to copy:', err);
+      toast.error("Failed to copy IP address");
+      console.error("Failed to copy:", err);
     }
   };
 
@@ -243,10 +241,14 @@ export default function SpeedTest() {
               {/* Percentage display in the center */}
               <div className="absolute inset-0 flex items-center justify-center flex-col">
                 <div className="text-3xl font-bold">{testProgress}%</div>
-                <div className="text-sm text-gray-400">{getTestPhaseLabel()}</div>
+                <div className="text-sm text-gray-400">
+                  {getTestPhaseLabel()}
+                </div>
               </div>
             </div>
-            <p className="text-gray-400">This may take 15-30 seconds depending on your connection</p>
+            <p className="text-gray-400">
+              This may take 15-30 seconds depending on your connection
+            </p>
           </div>
         )}
 
@@ -269,7 +271,7 @@ export default function SpeedTest() {
               <div className="bg-white/5 rounded-2xl p-6 backdrop-blur-sm border border-white/10">
                 <h3 className="text-gray-400 mb-2">Upload</h3>
                 <div className="text-4xl font-bold bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
-                  {uploadSpeed ? formatSpeed(uploadSpeed) : '---'}
+                  {uploadSpeed ? formatSpeed(uploadSpeed) : "---"}
                 </div>
               </div>
 
@@ -277,7 +279,7 @@ export default function SpeedTest() {
               <div className="bg-white/5 rounded-2xl p-6 backdrop-blur-sm border border-white/10">
                 <h3 className="text-gray-400 mb-2">Ping</h3>
                 <div className="text-4xl font-bold bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
-                  {ping ? formatPing(ping) : '---'}
+                  {ping ? formatPing(ping) : "---"}
                 </div>
               </div>
             </div>
@@ -312,7 +314,10 @@ export default function SpeedTest() {
                 <div className="flex items-center">
                   <span className="text-gray-400 w-24">Provider:</span>
                   <span className="text-white capitalize">
-                    {networkInfo.provider?.toLowerCase().replace(/\b\w/g, l => l.toUpperCase()) || 'Unknown Provider'}
+                    {networkInfo.provider
+                      ?.toLowerCase()
+                      .replace(/\b\w/g, (l) => l.toUpperCase()) ||
+                      "Unknown Provider"}
                   </span>
                 </div>
                 <div className="flex items-center">
@@ -320,7 +325,7 @@ export default function SpeedTest() {
                   <span className="text-white">
                     {networkInfo.location && networkInfo.location.city
                       ? networkInfo.location.city
-                      : 'Unknown'}
+                      : "Unknown"}
                   </span>
                 </div>
                 <div className="flex items-center">
@@ -349,18 +354,26 @@ export default function SpeedTest() {
               <div className="space-y-2">
                 <div className="flex items-center">
                   <span className="text-gray-400 w-32">Download:</span>
-                  <span className="text-white">{formatSpeed(averageSpeedData.downloadAvg)}</span>
+                  <span className="text-white">
+                    {formatSpeed(averageSpeedData.downloadAvg)}
+                  </span>
                 </div>
                 <div className="flex items-center">
                   <span className="text-gray-400 w-32">Upload:</span>
-                  <span className="text-white">{formatSpeed(averageSpeedData.uploadAvg)}</span>
+                  <span className="text-white">
+                    {formatSpeed(averageSpeedData.uploadAvg)}
+                  </span>
                 </div>
                 <div className="flex items-center">
                   <span className="text-gray-400 w-32">Ping:</span>
-                  <span className="text-white">{formatPing(averageSpeedData.pingAvg)}</span>
+                  <span className="text-white">
+                    {formatPing(averageSpeedData.pingAvg)}
+                  </span>
                 </div>
                 <div className="text-xs text-gray-500 mt-2">
-                  Based on {averageSpeedData.samples} {averageSpeedData.samples === 1 ? 'test' : 'tests'} from users with {averageSpeedData.provider}
+                  Based on {averageSpeedData.samples}{" "}
+                  {averageSpeedData.samples === 1 ? "test" : "tests"} from users
+                  with {averageSpeedData.provider}
                 </div>
               </div>
             </div>

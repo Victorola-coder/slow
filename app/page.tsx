@@ -25,6 +25,18 @@ export default function Home() {
           </div>
         </div>
       </div>
+      <footer className="text-center text-gray-400 text-sm mt-8 flex flex-row justify-between items-center">
+        <p>&copy; {new Date().getFullYear()} Pulse. All rights reserved.</p>
+        <p className="text-primary text-base">
+          <a
+            href="https://techgix.xyz"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Techgix
+          </a>
+        </p>
+      </footer>
     </main>
   );
 }

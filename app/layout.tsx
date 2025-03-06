@@ -1,5 +1,4 @@
 import "./global.css";
-import { Toaster } from "sonner";
 import localFont from "next/font/local";
 import { AOS } from "./components/global";
 import { Montserrat } from "next/font/google";
@@ -32,10 +31,17 @@ export const metadata: Metadata = {
     icon: "/icon.png",
   },
   title: "SpeedPulse - Internet Speed Test",
-  description: "Test your internet speed, check your IP, and compare regional network performance with SpeedPulse.",
+  description:
+    "Test your internet speed, check your IP, and compare regional network performance with SpeedPulse.",
   applicationName: "SpeedPulse",
   authors: [{ name: "SpeedPulse", url: "https://speedpulse.dev" }],
-  keywords: ["Speed Test", "Internet Speed", "Network Test", "IP Check", "Network Statistics"],
+  keywords: [
+    "Speed Test",
+    "Internet Speed",
+    "Network Test",
+    "IP Check",
+    "Network Statistics",
+  ],
   creator: "SpeedPulse",
   publisher: "SpeedPulse",
   generator: "Next.js",
@@ -91,7 +97,6 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${montserrat.className} ${geistMono.variable} antialiased`}
       >
-        <Toaster richColors />
         <AOS />
         {children}
       </body>

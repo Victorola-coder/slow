@@ -6,22 +6,6 @@ import { useState, useEffect } from "react";
 import { API_ENDPOINTS } from "../constants";
 import { getNetworkInfo } from "../lib/networkInfo";
 
-interface NetworkInfoData {
-  ip: string;
-  location: {
-    country: string;
-    region: string;
-    city: string;
-  };
-  provider: string;
-  regionalSpeeds?: {
-    averageDownload: number;
-    averageUpload: number;
-    averagePing: number;
-  };
-  timezone?: string;
-}
-
 export default function NetworkInfo() {
   const [networkInfo, setNetworkInfo] = useState<NetworkInfoData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -31,7 +15,7 @@ export default function NetworkInfo() {
     setRefreshing(true);
     try {
       const info = await getNetworkInfo();
-      setNetworkInfo(info);
+      setNetworkInfo(info as NetworkInfoData);
     } catch (error) {
       console.error("Failed to fetch network info:", error);
       try {
@@ -149,10 +133,11 @@ export default function NetworkInfo() {
               <motion.div
                 initial={{ width: 0 }}
                 animate={{
-                  width: `${((networkInfo?.regionalSpeeds?.averageDownload || 0) /
-                    200) *
+                  width: `${
+                    ((networkInfo?.regionalSpeeds?.averageDownload || 0) /
+                      200) *
                     100
-                    }%`,
+                  }%`,
                 }}
                 className="h-full bg-gradient-to-r from-purple-500 to-blue-500"
               />
@@ -169,9 +154,10 @@ export default function NetworkInfo() {
               <motion.div
                 initial={{ width: 0 }}
                 animate={{
-                  width: `${((networkInfo?.regionalSpeeds?.averageUpload || 0) / 100) *
+                  width: `${
+                    ((networkInfo?.regionalSpeeds?.averageUpload || 0) / 100) *
                     100
-                    }%`,
+                  }%`,
                 }}
                 className="h-full bg-gradient-to-r from-purple-500 to-blue-500"
               />
@@ -188,9 +174,10 @@ export default function NetworkInfo() {
               <motion.div
                 initial={{ width: 0 }}
                 animate={{
-                  width: `${((networkInfo?.regionalSpeeds?.averagePing || 0) / 100) *
+                  width: `${
+                    ((networkInfo?.regionalSpeeds?.averagePing || 0) / 100) *
                     100
-                    }%`,
+                  }%`,
                 }}
                 className="h-full bg-gradient-to-r from-purple-500 to-blue-500"
               />

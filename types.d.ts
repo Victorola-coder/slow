@@ -85,3 +85,68 @@ type TextareaProps = {
 type OTPState = {
   [key: string]: string;
 };
+
+interface SpeedTestResult {
+  downloadSpeed: number | null;
+  uploadSpeed: number | null;
+  ping: number | null;
+  timestamp: Date;
+}
+
+interface NetworkInfoData {
+  ip: string;
+  location: {
+    country: string;
+    region: string;
+    city: string;
+  };
+  isp: string;
+  regionalSpeeds: {
+    averageDownload: number;
+    averageUpload: number;
+    averagePing: number;
+  };
+}
+
+interface ISPAverageSpeedData {
+  pingAvg: number;
+  samples: number;
+  provider: string;
+  uploadAvg: number;
+  downloadAvg: number;
+}
+
+interface NetworkInfoData {
+  ip: string;
+  location: {
+    country: string;
+    region: string;
+    city: string;
+  };
+  provider: string;
+  regionalSpeeds?: {
+    averageDownload: number;
+    averageUpload: number;
+    averagePing: number;
+  };
+  timezone?: string;
+}
+
+interface NetworkInfo {
+  ip: string;
+  provider: string;
+  location: {
+    city: string;
+    region: string;
+    country: string;
+    loc: string;
+  };
+}
+
+interface AverageSpeedData {
+  provider: string;
+  downloadAvg: number;
+  uploadAvg: number;
+  pingAvg: number;
+  samples: number;
+}
