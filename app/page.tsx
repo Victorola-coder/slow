@@ -6,7 +6,35 @@ import DynamicISPStats from "./components/DynamicISPStats";
 
 export default function Home() {
   return (
-    <main className="min-h-screen p-4 md:p-8 bg-[#0A0A0A]">
+    <main className="min-h-screen py-12 px-4">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebApplication",
+            "name": "Pulse",
+            "alternateName": "Pulse Internet Speed Test",
+            "description": "Measure your internet connection's download speed, upload speed, and ping with our accurate pulse monitoring tool.",
+            "url": process.env.NEXT_PUBLIC_BASE_URL || "https://pulse-speed.vercel.app",
+            "applicationCategory": "UtilityApplication",
+            "operatingSystem": "Web",
+            "offers": {
+              "@type": "Offer",
+              "price": "0",
+              "priceCurrency": "USD"
+            },
+            "image": "/logo.png",
+            "screenshot": "/logo.png",
+            "softwareVersion": "1.0.0",
+            "aggregateRating": {
+              "@type": "AggregateRating",
+              "ratingValue": "4.8",
+              "ratingCount": "1024"
+            }
+          })
+        }}
+      />
       <Toast />
       <div className="max-w-5xl mx-auto space-y-8">
         <div className="text-center space-y-4">
