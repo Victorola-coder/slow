@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     siteName: "Pulse",
     images: [
       {
-        url: "/logo.png",
+        url: "/logo.webp",
         width: 1200,
         height: 630,
         alt: "Pulse Internet Speed Test",
@@ -35,18 +35,18 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Pulse | Internet Speed Test Tool",
     description: "Measure your internet connection's download speed, upload speed, and ping with our accurate pulse monitoring tool.",
-    images: ["/logo.png"],
+    images: ["/logo.webp"],
     creator: "@pulse",
   },
   icons: {
     icon: [
       { url: "/favicon.ico" },
-      { url: "/logo.png", type: "image/png" },
+      { url: "/logo.webp", type: "image/png" },
     ],
     apple: [
-      { url: "/logo.png" },
+      { url: "/logo.webp" },
     ],
-    shortcut: [{ url: "/logo.png" }],
+    shortcut: [{ url: "/logo.webp" }],
   },
   manifest: "/manifest.json",
   robots: {

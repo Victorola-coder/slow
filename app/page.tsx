@@ -24,8 +24,8 @@ export default function Home() {
               "price": "0",
               "priceCurrency": "USD"
             },
-            "image": "/logo.png",
-            "screenshot": "/logo.png",
+            "image": "/logo.webp",
+            "screenshot": "/logo.webp",
             "softwareVersion": "1.0.0",
             "aggregateRating": {
               "@type": "AggregateRating",
