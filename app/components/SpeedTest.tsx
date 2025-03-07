@@ -24,9 +24,8 @@ export default function SpeedTest() {
   // Fetch average speeds when network info is available
   useEffect(() => {
     if (networkInfo) {
-      const locationKey = `${networkInfo.location.city || "unknown"}-${
-        networkInfo.location.region || "unknown"
-      }-${networkInfo.location.country || "unknown"}`;
+      const locationKey = `${networkInfo.location.city || "unknown"}-${networkInfo.location.region || "unknown"
+        }-${networkInfo.location.country || "unknown"}`;
       fetchAverageSpeedData(locationKey, networkInfo.provider);
     }
   }, [networkInfo]);
@@ -77,11 +76,11 @@ export default function SpeedTest() {
     <div className="w-full max-w-4xl mx-auto">
       <div className="text-center mb-8">
         <h2 className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent mb-4">
-          Test Your Internet Speed
+          Pulse: Your Internet Speed
         </h2>
         <p className="text-gray-400 max-w-2xl mx-auto">
           Measure your connection's download speed, upload speed, and ping with
-          our accurate speed test tool.
+          our accurate pulse monitoring tool.
         </p>
       </div>
 
@@ -92,7 +91,7 @@ export default function SpeedTest() {
           className="px-8 py-3 text-lg"
           variant="primary"
         >
-          {testing ? "Testing..." : "Start Speed Test"}
+          {testing ? "Testing..." : "Start Pulse Test"}
         </Button>
       </div>
 
@@ -117,7 +116,7 @@ export default function SpeedTest() {
       {/* Information about the test */}
       <div className="mt-12 p-6 rounded-xl bg-black/20 backdrop-blur-sm border border-white/10">
         <h3 className="text-xl font-semibold text-white mb-4">
-          About This Speed Test
+          About Pulse
         </h3>
         <div className="space-y-3 text-gray-400 text-sm">
           <p>

@@ -1,104 +1,85 @@
-import "./global.css";
-import localFont from "next/font/local";
-import { AOS } from "./components/global";
-import { Montserrat } from "next/font/google";
-import type { Metadata, Viewport } from "next";
+import "./globals.css";
+import type { Metadata } from "next";
+import { Inter } from "next/font/google";
+import { Toaster } from "sonner";
 
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-  weight: "100 900",
-});
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
-});
-
-const montserrat = Montserrat({
-  subsets: ["latin"],
-  variable: "--font-montserrat",
-  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
-});
-
-export const viewport: Viewport = {
-  maximumScale: 1,
-};
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://speedpulse.dev"),
-  icons: {
-    icon: "/icon.png",
-  },
-  title: "SpeedPulse - Internet Speed Test",
-  description:
-    "Test your internet speed, check your IP, and compare regional network performance with SpeedPulse.",
-  applicationName: "SpeedPulse",
-  authors: [{ name: "SpeedPulse", url: "https://speedpulse.dev" }],
-  keywords: [
-    "Speed Test",
-    "Internet Speed",
-    "Network Test",
-    "IP Check",
-    "Network Statistics",
-  ],
-  creator: "SpeedPulse",
-  publisher: "SpeedPulse",
+  title: "Pulse | Internet Speed Test Tool",
+  description: "Measure your internet connection's download speed, upload speed, and ping with our accurate pulse monitoring tool.",
+  keywords: "internet speed test, network speed, download speed, upload speed, ping test, connection test, bandwidth test, pulse",
+  authors: [{ name: "Pulse Team" }],
   generator: "Next.js",
-  referrer: "origin",
+  applicationName: "Pulse",
+  creator: "Pulse Team",
+  publisher: "Pulse",
+  metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || "https://pulse-speed.vercel.app"),
+  openGraph: {
+    title: "Pulse | Internet Speed Test Tool",
+    description: "Measure your internet connection's download speed, upload speed, and ping with our accurate pulse monitoring tool.",
+    url: "/",
+    siteName: "Pulse",
+    images: [
+      {
+        url: "/logo.webp",
+        width: 1200,
+        height: 630,
+        alt: "Pulse Internet Speed Test",
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Pulse | Internet Speed Test Tool",
+    description: "Measure your internet connection's download speed, upload speed, and ping with our accurate pulse monitoring tool.",
+    images: ["/logo.webp"],
+    creator: "@pulse",
+  },
+  icons: {
+    icon: [
+      { url: "/favicon.ico" },
+      { url: "/logo.webp", type: "image/png" },
+    ],
+    apple: [
+      { url: "/logo.webp" },
+    ],
+    shortcut: [{ url: "/logo.webp" }],
+  },
+  manifest: "/manifest.json",
   robots: {
     index: true,
     follow: true,
-  },
-  openGraph: {
-    title: "SpeedPulse - Internet Speed Test",
-    description: "Fast and accurate internet speed testing",
-    url: "https://speedpulse.dev",
-    siteName: "SpeedPulse",
-    images: [
-      {
-        url: "/og-image.png",
-        width: 1200,
-        height: 630,
-      },
-    ],
-  },
-  twitter: {
-    site: "nextapp",
-    creator: "socialmediahandle",
-    title:
-      "nextapp template - I fell in love with next.js, im trying to make a template for it tooo",
-    description:
-      "I fell in love with next.js, im trying to make a template for it too",
-    card: "summary_large_image",
-    images: ["linktoopengraph.com"],
-  },
-  appleWebApp: {
-    capable: true,
-    title: "nextapp template",
-    statusBarStyle: "black-translucent",
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
   },
   formatDetection: {
-    telephone: false,
+    telephone: true,
+    email: true,
+    address: true,
   },
-  abstract:
-    "I fell in love with next.js, im trying to make a template for it tooo",
-  category: "Social",
-  classification: "Social",
+  category: "technology",
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${montserrat.className} ${geistMono.variable} antialiased`}
-      >
-        <AOS />
+      <head>
+        <link rel="canonical" href={process.env.NEXT_PUBLIC_BASE_URL || "https://pulse-speed.vercel.app"} />
+      </head>
+      <body className={inter.className}>
         {children}
+        <Toaster position="top-center" />
       </body>
     </html>
   );
